@@ -20,33 +20,33 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/v1/logs")
+@RequestMapping("/v1/activity/logs")
 @RequiredArgsConstructor
 public class ActivityLogController {
 
 	private final ActivityLogService activityLogService;
 
-	@PostMapping("/add-activity")
+	@PostMapping
 	public ResponseEntity<ApiResponse<ActivityLogDTO>> createLog(@Valid @RequestBody ActivityLogDTO activityProxy) {
 		return ResponseEntity.ok(new ApiResponse<ActivityLogDTO>(true, "New Activity Added", activityLogService.createActivityLog(activityProxy)));
 	}
 
-	@GetMapping("/get-activity/{id}")
+	@GetMapping("/{id}")
 	public ResponseEntity<ApiResponse<ActivityLogDTO>> getLog(@PathVariable Long id) {
 		return ResponseEntity.ok(new ApiResponse<>(true, "Successfull get Log", activityLogService.getActivityLogById(id)));
 	}
 
-	@GetMapping("/get-all-activity")
+	@GetMapping
 	public ResponseEntity<ApiResponse<List<ActivityLogDTO>>> getAllLogs() {
 		return ResponseEntity.ok(new ApiResponse<>(true, "Successfull get All Log", activityLogService.getAllActivityLogs()));
 	}
 
-	@PutMapping("/update/{id}")
+	@PutMapping("/{id}")
 	public ResponseEntity<ApiResponse<ActivityLogDTO>> updateLog(@PathVariable Long id, @Valid @RequestBody ActivityLogDTO activityLog) {
 		return ResponseEntity.ok(new ApiResponse<ActivityLogDTO>(true, "Activity Updated", activityLogService.updateActivityLog(id, activityLog)));
 	}
 
-	@DeleteMapping("/delete/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<ApiResponse<String>> deleteLog(@PathVariable Long id) {
 		String message = activityLogService.deleteActivityLog(id);
 		return ResponseEntity.ok(new ApiResponse<>(true, message));

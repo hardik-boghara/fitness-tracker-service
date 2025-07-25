@@ -25,17 +25,17 @@ public class AdminUserController {
 
 	private final UserService userService;
 
-	@PostMapping("/create-user")
+	@PostMapping
 	public ResponseEntity<ApiResponse<UserDTO>> createUser(@Valid @RequestBody UserDTO dto) {
 		return ResponseEntity.ok(new ApiResponse<UserDTO>(true, "New User Created", userService.createUser(dto)));
 	}
 
-	@GetMapping("/get-users")
+	@GetMapping
 	public ResponseEntity<ApiResponse<List<UserDTO>>> getAllUsers() {
 		return ResponseEntity.ok(new ApiResponse<List<UserDTO>>(true, "Successfully get Users Detail", userService.getAllUsers()));
 	}
 
-	@DeleteMapping("/delete/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<ApiResponse<UserDTO>> deleteUser(@PathVariable Long id) {
 		String message = userService.deleteUser(id);
 		return ResponseEntity.ok(new ApiResponse<>(true, message));

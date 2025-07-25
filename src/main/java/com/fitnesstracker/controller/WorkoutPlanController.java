@@ -20,34 +20,34 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/v1/plans")
+@RequestMapping("/v1/workout/plans")
 @RequiredArgsConstructor
 public class WorkoutPlanController {
 
 	private final WorkoutPlanService planService;
 
-	@PostMapping("/create-workout")
+	@PostMapping
 	public ResponseEntity<ApiResponse<WorkoutPlanDTO>> createPlan(@Valid @RequestBody WorkoutPlanDTO dto) {
 		return ResponseEntity.ok(new ApiResponse<>(true, "New workout Added", planService.createWorkoutPlan(dto)));
 	}
 
-	@GetMapping("/get-workout/{id}")
+	@GetMapping("/{id}")
 	public ResponseEntity<ApiResponse<WorkoutPlanDTO>> getPlan(@PathVariable Long id) {
 		return ResponseEntity.ok(new ApiResponse<>(true, "Successfully get workout Detail", planService.getWorkoutPlanById(id)));
 	}
 
-	@GetMapping("/get-workout")
+	@GetMapping
 	public ResponseEntity<ApiResponse<List<WorkoutPlanDTO>>> getAllPlans() {
 		return ResponseEntity.ok(new ApiResponse<>(true, "Successfully get all workout Details", planService.getAllWorkoutPlans()));
 	}
 
-	@PutMapping("/update-workout/{id}")
+	@PutMapping("/{id}")
 	public ResponseEntity<ApiResponse<WorkoutPlanDTO>> updatePlan(@PathVariable Long id,
 			@Valid @RequestBody WorkoutPlanDTO workoutProxy) {
 		return ResponseEntity.ok(new ApiResponse<>(true, "Workout Plan Updated", planService.updateWorkoutPlan(id, workoutProxy)));
 	}
 
-	@DeleteMapping("/delete/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<ApiResponse<String>> deletePlan(@PathVariable Long id) {
 		String message = planService.deleteWorkoutPlan(id);
 		return ResponseEntity.ok(new ApiResponse<>(true, message));
