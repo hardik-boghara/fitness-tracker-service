@@ -15,7 +15,7 @@ A Spring Boot RESTful API for managing users, workout plans, and activity logs.
 - Bean Validation on DTOs
 - Exception Handling with custom error responses
 - H2 In-Memory DB for easy testing
-- [https://github.com/hardik-boghara/fitness-tracker-service/blob/development/src/main/resources/swagger.json](Swagger for API documentation)
+- Swagger for API documentation
 
 ---
 
@@ -33,7 +33,7 @@ A Spring Boot RESTful API for managing users, workout plans, and activity logs.
 
 ```bash
 # Clone the repository
-git clone [https://github.com/your-username/fitness-tracker-api.git](https://github.com/hardik-boghara/fitness-tracker-service.git)
+git clone https://github.com/hardik-boghara/fitness-tracker-service.git
 cd fitness-tracker-service
 
 # Build and run
