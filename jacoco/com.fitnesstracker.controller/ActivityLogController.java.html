@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ActivityLogController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fitness-tracker-service</a> &gt; <a href="index.source.html" class="el_package">com.fitnesstracker.controller</a> &gt; <span class="el_source">ActivityLogController.java</span></div><h1>ActivityLogController.java</h1><pre class="source lang-java linenums">package com.fitnesstracker.controller;
+
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.fitnesstracker.model.ActivityLogDTO;
+import com.fitnesstracker.model.ApiResponse;
+import com.fitnesstracker.service.ActivityLogService;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping(&quot;/v1/activity/logs&quot;)
+@RequiredArgsConstructor
+public class ActivityLogController {
+
+	private final ActivityLogService activityLogService;
+
+	@PostMapping
+	public ResponseEntity&lt;ApiResponse&lt;ActivityLogDTO&gt;&gt; createLog(@Valid @RequestBody ActivityLogDTO activityProxy) {
+<span class="nc" id="L31">		return ResponseEntity.ok(new ApiResponse&lt;ActivityLogDTO&gt;(true, &quot;New Activity Added&quot;, activityLogService.createActivityLog(activityProxy)));</span>
+	}
+
+	@GetMapping(&quot;/{id}&quot;)
+	public ResponseEntity&lt;ApiResponse&lt;ActivityLogDTO&gt;&gt; getLog(@PathVariable Long id) {
+<span class="nc" id="L36">		return ResponseEntity.ok(new ApiResponse&lt;&gt;(true, &quot;Successfull get Log&quot;, activityLogService.getActivityLogById(id)));</span>
+	}
+
+	@GetMapping
+	public ResponseEntity&lt;ApiResponse&lt;List&lt;ActivityLogDTO&gt;&gt;&gt; getAllLogs() {
+<span class="nc" id="L41">		return ResponseEntity.ok(new ApiResponse&lt;&gt;(true, &quot;Successfull get All Log&quot;, activityLogService.getAllActivityLogs()));</span>
+	}
+
+	@PutMapping(&quot;/{id}&quot;)
+	public ResponseEntity&lt;ApiResponse&lt;ActivityLogDTO&gt;&gt; updateLog(@PathVariable Long id, @Valid @RequestBody ActivityLogDTO activityLog) {
+<span class="nc" id="L46">		return ResponseEntity.ok(new ApiResponse&lt;ActivityLogDTO&gt;(true, &quot;Activity Updated&quot;, activityLogService.updateActivityLog(id, activityLog)));</span>
+	}
+
+	@DeleteMapping(&quot;/{id}&quot;)
+	public ResponseEntity&lt;ApiResponse&lt;String&gt;&gt; deleteLog(@PathVariable Long id) {
+<span class="nc" id="L51">		String message = activityLogService.deleteActivityLog(id);</span>
+<span class="nc" id="L52">		return ResponseEntity.ok(new ApiResponse&lt;&gt;(true, message));</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

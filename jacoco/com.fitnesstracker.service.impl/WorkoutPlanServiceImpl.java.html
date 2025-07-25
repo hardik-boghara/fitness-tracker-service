@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WorkoutPlanServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fitness-tracker-service</a> &gt; <a href="index.source.html" class="el_package">com.fitnesstracker.service.impl</a> &gt; <span class="el_source">WorkoutPlanServiceImpl.java</span></div><h1>WorkoutPlanServiceImpl.java</h1><pre class="source lang-java linenums">package com.fitnesstracker.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
+
+import com.fitnesstracker.domain.User;
+import com.fitnesstracker.domain.WorkoutPlan;
+import com.fitnesstracker.exception.ResourceNotFoundException;
+import com.fitnesstracker.model.WorkoutPlanDTO;
+import com.fitnesstracker.repo.WorkoutPlanRepository;
+import com.fitnesstracker.service.WorkoutPlanService;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class WorkoutPlanServiceImpl implements WorkoutPlanService {
+
+	private final WorkoutPlanRepository workoutPlanRepository;
+
+	@Override
+	@Transactional(rollbackOn = Exception.class)
+	public WorkoutPlanDTO createWorkoutPlan(WorkoutPlanDTO workPlanProxy) {
+
+<span class="nc" id="L29">		ModelMapper mapper = new ModelMapper();</span>
+<span class="nc" id="L30">		WorkoutPlan workPlan = mapper.map(workPlanProxy, WorkoutPlan.class);</span>
+<span class="nc" id="L31">		workPlan.setUser(User.builder().id(workPlanProxy.getUserId()).build());</span>
+<span class="nc" id="L32">		workoutPlanRepository.save(workPlan);</span>
+<span class="nc" id="L33">		return workPlanProxy;</span>
+	}
+
+	@Override
+	public WorkoutPlanDTO getWorkoutPlanById(Long id) {
+
+<span class="nc" id="L39">		WorkoutPlan workoutPlan = workoutPlanRepository.findById(id)</span>
+<span class="nc" id="L40">				.orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Workout Plan not found&quot;));</span>
+
+<span class="nc" id="L42">		ModelMapper mapper = new ModelMapper();</span>
+<span class="nc" id="L43">		WorkoutPlanDTO workoutProxy = mapper.map(workoutPlan, WorkoutPlanDTO.class);</span>
+
+<span class="nc" id="L45">		return workoutProxy;</span>
+	}
+
+	@Override
+	public List&lt;WorkoutPlanDTO&gt; getAllWorkoutPlans() {
+<span class="nc" id="L50">		List&lt;WorkoutPlan&gt; workoutList = workoutPlanRepository.findAll();</span>
+
+<span class="nc bnc" id="L52" title="All 4 branches missed.">		if (workoutList == null || workoutList.isEmpty()) {</span>
+<span class="nc" id="L53">			throw new ResourceNotFoundException(&quot;WorkoutPlan data is Not available&quot;);</span>
+		}
+
+<span class="nc" id="L56">		List&lt;WorkoutPlanDTO&gt; workoutProxyList = new ArrayList&lt;&gt;(workoutList.size());</span>
+<span class="nc" id="L57">		ModelMapper mapper = new ModelMapper();</span>
+
+<span class="nc" id="L59">		workoutList.forEach(workoutPlan -&gt; {</span>
+<span class="nc" id="L60">			WorkoutPlanDTO WorkoutPlanProxy = mapper.map(workoutPlan, WorkoutPlanDTO.class);</span>
+<span class="nc" id="L61">			workoutProxyList.add(WorkoutPlanProxy);</span>
+<span class="nc" id="L62">		});</span>
+
+<span class="nc" id="L64">		return workoutProxyList;</span>
+	}
+
+	@Override
+	@Transactional(rollbackOn = Exception.class)
+	public WorkoutPlanDTO updateWorkoutPlan(Long id, WorkoutPlanDTO workoutProxy) {
+<span class="nc" id="L70">		WorkoutPlan workoutPlan = workoutPlanRepository.findById(id)</span>
+<span class="nc" id="L71">				.orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Workout Plan not found&quot;));</span>
+
+<span class="nc" id="L73">		workoutPlan.setName(workoutProxy.getName());</span>
+<span class="nc" id="L74">		workoutPlan.setDescription(workoutProxy.getDescription());</span>
+<span class="nc" id="L75">		workoutPlan.setDurationInDays(workoutProxy.getDurationInDays());</span>
+<span class="nc" id="L76">		workoutPlan.setUser(User.builder().id(workoutProxy.getUserId()).build());</span>
+
+<span class="nc" id="L78">		workoutPlanRepository.save(workoutPlan);</span>
+<span class="nc" id="L79">		return workoutProxy;</span>
+	}
+
+	@Override
+	@Transactional(rollbackOn = Exception.class)
+	public String deleteWorkoutPlan(Long id) {
+
+<span class="nc" id="L86">		int deletedRows = workoutPlanRepository.deleteWorkoutById(id);</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">		if (deletedRows &gt; 0) {</span>
+<span class="nc" id="L88">			return &quot;Workout Plan Deleted&quot;;</span>
+		}
+<span class="nc" id="L90">		return &quot;No Matching Workout PlanFound&quot;;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ActivityLogServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fitness-tracker-service</a> &gt; <a href="index.source.html" class="el_package">com.fitnesstracker.service.impl</a> &gt; <span class="el_source">ActivityLogServiceImpl.java</span></div><h1>ActivityLogServiceImpl.java</h1><pre class="source lang-java linenums">package com.fitnesstracker.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+
+import com.fitnesstracker.domain.ActivityLog;
+import com.fitnesstracker.domain.User;
+import com.fitnesstracker.domain.WorkoutPlan;
+import com.fitnesstracker.exception.ResourceNotFoundException;
+import com.fitnesstracker.model.ActivityLogDTO;
+import com.fitnesstracker.repo.ActivityLogRepository;
+import com.fitnesstracker.repo.UserRepository;
+import com.fitnesstracker.repo.WorkoutPlanRepository;
+import com.fitnesstracker.service.ActivityLogService;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class ActivityLogServiceImpl implements ActivityLogService {
+
+	private final ActivityLogRepository activityLogRepository;
+	private final UserRepository userRepository;
+	private final WorkoutPlanRepository workoutPlanRepository;
+
+	@Override
+	@Transactional(rollbackOn = Exception.class)
+	public ActivityLogDTO createActivityLog(ActivityLogDTO activityProxy) {
+<span class="nc" id="L34">		Long userId = workoutPlanRepository.findUserIdById(activityProxy.getWorkoutPlanId());</span>
+
+<span class="nc bnc" id="L36" title="All 2 branches missed.">		if (userId == null) {</span>
+<span class="nc" id="L37">			throw new ResourceNotFoundException(&quot;User not found with workout-plan id: &quot; + activityProxy.getWorkoutPlanId());</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">		} else if (userId != activityProxy.getUserId()) {</span>
+<span class="nc" id="L39">			throw new ResourceNotFoundException(&quot;User not found with id: &quot; + activityProxy.getUserId());</span>
+		}
+
+<span class="nc" id="L42">		ActivityLog activityLog = new ActivityLog(); </span>
+<span class="nc" id="L43">		BeanUtils.copyProperties(activityProxy, activityLog);</span>
+<span class="nc" id="L44">		activityLog.setUser(User.builder().id(activityProxy.getUserId()).build());</span>
+<span class="nc" id="L45">		activityLog.setWorkoutPlan(WorkoutPlan.builder().id(activityProxy.getWorkoutPlanId()).build());</span>
+
+<span class="nc" id="L47">		activityLogRepository.save(activityLog);</span>
+
+<span class="nc" id="L49">		return activityProxy;</span>
+	}
+
+	@Override
+	public ActivityLogDTO getActivityLogById(Long id) {
+<span class="nc" id="L54">		ActivityLog activity = activityLogRepository.findById(id)</span>
+<span class="nc" id="L55">				.orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Activity Log not found&quot;));</span>
+
+<span class="nc" id="L57">		ModelMapper mapper = new ModelMapper();</span>
+<span class="nc" id="L58">		ActivityLogDTO activityProxy = mapper.map(activity, ActivityLogDTO.class);</span>
+<span class="nc" id="L59">		return activityProxy;</span>
+	}
+
+	@Override
+	public List&lt;ActivityLogDTO&gt; getAllActivityLogs() {
+<span class="nc" id="L64">		List&lt;ActivityLog&gt; activityList = activityLogRepository.findAll();</span>
+
+<span class="nc bnc" id="L66" title="All 4 branches missed.">		if (activityList == null || activityList.isEmpty()) {</span>
+<span class="nc" id="L67">			throw new ResourceNotFoundException(&quot;Activity is Not available&quot;);</span>
+		}
+
+<span class="nc" id="L70">		List&lt;ActivityLogDTO&gt; activityProxyList = new ArrayList&lt;&gt;(activityList.size());</span>
+<span class="nc" id="L71">		ModelMapper mapper = new ModelMapper();</span>
+
+<span class="nc" id="L73">		activityList.forEach(activity -&gt; {</span>
+<span class="nc" id="L74">			ActivityLogDTO logProxy = mapper.map(activity, ActivityLogDTO.class);</span>
+<span class="nc" id="L75">			activityProxyList.add(logProxy);</span>
+<span class="nc" id="L76">		});</span>
+
+<span class="nc" id="L78">		return activityProxyList;</span>
+	}
+
+	@Override
+	@Transactional(rollbackOn = Exception.class)
+	public ActivityLogDTO updateActivityLog(Long id, ActivityLogDTO activityProxy) {
+<span class="nc" id="L84">		ActivityLog log = activityLogRepository.findById(id)</span>
+<span class="nc" id="L85">				.orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Activity Log not found&quot;));</span>
+
+<span class="nc" id="L87">		User user = userRepository.findById(activityProxy.getUserId())</span>
+<span class="nc" id="L88">				.orElseThrow(() -&gt; new ResourceNotFoundException(&quot;User not found&quot;));</span>
+
+<span class="nc" id="L90">		WorkoutPlan plan = workoutPlanRepository.findById(activityProxy.getWorkoutPlanId())</span>
+<span class="nc" id="L91">				.orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Workout Plan not found&quot;));</span>
+
+<span class="nc" id="L93">		log.setActivityDate(activityProxy.getActivityDate());</span>
+<span class="nc" id="L94">		log.setActivityDescription(activityProxy.getActivityDescription());</span>
+<span class="nc" id="L95">		log.setDurationInMinutes(activityProxy.getDurationInMinutes());</span>
+<span class="nc" id="L96">		log.setUser(user);</span>
+<span class="nc" id="L97">		log.setWorkoutPlan(plan);</span>
+
+<span class="nc" id="L99">		activityLogRepository.save(log);</span>
+<span class="nc" id="L100">		return activityProxy;</span>
+	}
+
+	@Override
+	@Transactional(rollbackOn = Exception.class)
+	public String deleteActivityLog(Long id) {
+<span class="nc" id="L106">		int deletedRows = activityLogRepository.deleteActivityLogById(id);</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">		if (deletedRows &gt; 0) {</span>
+<span class="nc" id="L108">			return &quot;Activity Deleted&quot;;</span>
+		}
+<span class="nc" id="L110">		return &quot;No Matching Activity Found&quot;;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
