@@ -29,15 +29,13 @@ public class SecurityConfig {
 						"/swagger-ui.html",
 						"/v3/api-docs/**",
 						"/swagger-ui/**",
-						"/v1/admin/users/**",
 						"/h2-console/**")
 						.permitAll()
-//				.requestMatchers("/v1/admin/users/**").hasRole("ADMIN")
+				.requestMatchers("/v1/admin/users/**").hasRole("ADMIN")
 				.requestMatchers("/v1/users/**", "/v1/plans/**", "/v1/logs/**").hasAnyRole("ADMIN", "USER").anyRequest()
 				.authenticated())
 				.httpBasic(Customizer.withDefaults());
 
-		// Required for H2 console
 	    http.headers(headers -> headers.frameOptions(Customizer.withDefaults()).disable());
 
 		return http.build();
@@ -45,7 +43,7 @@ public class SecurityConfig {
 
 	@Bean
 	PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
+		return new BCryptPasswordEncoder(); 
 	}
 
 	@Bean
