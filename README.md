@@ -4,7 +4,7 @@ A Spring Boot RESTful API for managing users, workout plans, and activity logs.
 
 ---
 
-## 📦 Features
+## Features
 
 - CRUD operations for:
   - Users
@@ -19,7 +19,7 @@ A Spring Boot RESTful API for managing users, workout plans, and activity logs.
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -29,7 +29,7 @@ A Spring Boot RESTful API for managing users, workout plans, and activity logs.
 
 ---
 
-### 🛠️ Setup & Run
+### Setup & Run
 
 ```bash
 # Clone the repository
