@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
@@ -36,7 +33,7 @@ public class UserServiceImpl implements UserService {
 		user.setCreatedDate(LocalDateTime.now());
 		
 		userRepository.save(user);
-
+		userProxy.setId(user.getId());
 		return userProxy;
 	}
 
@@ -83,6 +80,7 @@ public class UserServiceImpl implements UserService {
 		user.setRole(userProxy.getRole());
 		user.setModifiedDate(LocalDateTime.now());
 		userRepository.save(user);
+		userProxy.setId(user.getId());
 		return userProxy;
 	}
 
